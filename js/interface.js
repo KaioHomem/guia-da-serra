@@ -1,76 +1,163 @@
-// Módulo que manipula o DOM (cria e atualiza elementos na tela).
+// Módulo que manipula o DOM (cria e atualiza os elementos na tela).
 
-import { PRIORIDADES } from './tarefas.js';
+import { CATEGORIAS } from './dados.js';
 
-// Cria o <li> de uma tarefa
-function criarItem(tarefa) {
+// Cria o card (<li> com <article>) de um lugar
+function criarCard(lugar, ehFavorito) {
+  const categoria = CATEGORIAS[lugar.categoria];
+
   const item = document.createElement('li');
-  item.className = 'tarefa';
-  if (tarefa.concluida) {
-    item.classList.add('tarefa--concluida');
+  item.dataset.id = lugar.id;
+
+  const card = document.createElement('article');
+  card.className = 'card';
+  // O título do card dá nome ao <article> para o leitor de tela
+  card.setAttribute('aria-labelledby', `titulo-${lugar.id}`);
+
+  // Foto (ou um quadro com ícone, quando o lugar foi sugerido e não tem foto)
+  if (lugar.imagem) {
+    const img = document.createElement('img');
+    img.className = 'card__imagem';
+    img.src = lugar.imagem;
+    img.alt = lugar.alt; // texto alternativo: descreve a foto para quem não enxerga
+    img.loading = 'lazy'; // só carrega a foto quando ela chega perto da tela
+    img.width = 400;
+    img.height = 260;
+    card.appendChild(img);
+  } else {
+    const semFoto = document.createElement('div');
+    semFoto.className = 'card__sem-foto';
+    semFoto.setAttribute('aria-hidden', 'true'); // decorativo
+    semFoto.textContent = categoria.icone;
+    card.appendChild(semFoto);
   }
-  item.dataset.id = tarefa.id;
 
-  const idCheckbox = `tarefa-${tarefa.id}`;
+  const corpo = document.createElement('div');
+  corpo.className = 'card__corpo';
 
-  // Checkbox com <label> associado: o leitor de tela lê o nome da tarefa
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.id = idCheckbox;
-  checkbox.checked = tarefa.concluida;
-  checkbox.dataset.acao = 'alternar';
+  const etiqueta = document.createElement('p');
+  etiqueta.className = `etiqueta etiqueta--${lugar.categoria}`;
+  etiqueta.textContent = categoria.nome;
 
-  const label = document.createElement('label');
-  label.htmlFor = idCheckbox;
-  label.className = 'tarefa__texto';
-  label.textContent = tarefa.titulo; // textContent evita injeção de HTML
+  const titulo = document.createElement('h3');
+  titulo.id = `titulo-${lugar.id}`;
+  titulo.className = 'card__titulo';
+  titulo.textContent = lugar.nome; // textContent evita injeção de HTML
 
-  const etiqueta = document.createElement('span');
-  etiqueta.className = `etiqueta etiqueta--${tarefa.prioridade}`;
-  etiqueta.textContent = PRIORIDADES[tarefa.prioridade];
+  const cidade = document.createElement('p');
+  cidade.className = 'card__cidade';
+  cidade.textContent = `📍 ${lugar.cidade}`;
 
-  // Botão com ícone "✕": o aria-label diz o que ele faz
-  const remover = document.createElement('button');
-  remover.type = 'button';
-  remover.className = 'tarefa__remover';
-  remover.dataset.acao = 'remover';
-  remover.setAttribute('aria-label', `Remover tarefa: ${tarefa.titulo}`);
-  remover.innerHTML = '<span aria-hidden="true">✕</span>';
+  const resumo = document.createElement('p');
+  resumo.className = 'card__resumo';
+  resumo.textContent = lugar.resumo;
 
-  item.append(checkbox, label, etiqueta, remover);
+  // Botões do card
+  const acoes = document.createElement('div');
+  acoes.className = 'card__acoes';
+
+  const botaoDetalhes = document.createElement('button');
+  botaoDetalhes.type = 'button';
+  botaoDetalhes.className = 'botao botao--primario';
+  botaoDetalhes.dataset.acao = 'detalhes';
+  botaoDetalhes.innerHTML = `Ver detalhes <span class="sr-only">de ${lugar.nome}</span>`;
+
+  // Botão de favorito: aria-pressed diz se está marcado
+  const botaoFavorito = document.createElement('button');
+  botaoFavorito.type = 'button';
+  botaoFavorito.className = 'botao-favorito';
+  botaoFavorito.dataset.acao = 'favoritar';
+  botaoFavorito.setAttribute('aria-pressed', String(ehFavorito));
+  botaoFavorito.setAttribute('aria-label', `Favoritar ${lugar.nome}`);
+  botaoFavorito.innerHTML = `<span aria-hidden="true">${ehFavorito ? '♥' : '♡'}</span>`;
+
+  acoes.append(botaoDetalhes, botaoFavorito);
+
+  // Lugares sugeridos pelo usuário podem ser removidos
+  if (lugar.sugerido) {
+    const botaoRemover = document.createElement('button');
+    botaoRemover.type = 'button';
+    botaoRemover.className = 'botao botao--perigo';
+    botaoRemover.dataset.acao = 'remover';
+    botaoRemover.innerHTML = `Remover <span class="sr-only">${lugar.nome}</span>`;
+    acoes.appendChild(botaoRemover);
+  }
+
+  corpo.append(etiqueta, titulo, cidade, resumo, acoes);
+  card.appendChild(corpo);
+  item.appendChild(card);
   return item;
 }
 
-// Redesenha a lista inteira a partir do array de tarefas.
-// idNovo (opcional): tarefa recém-adicionada, que recebe animação de entrada.
-export function renderizarLista(elementoLista, elementoVazio, tarefas, idNovo = null) {
-  elementoLista.innerHTML = '';
-  tarefas.forEach((tarefa) => {
-    const item = criarItem(tarefa);
-    if (tarefa.id === idNovo) {
-      item.classList.add('tarefa--nova');
+// Redesenha todos os cards a partir do array de lugares.
+// idNovo (opcional): lugar recém-adicionado, que entra com animação.
+export function renderizarCards(lista, vazio, lugares, favoritos, idNovo = null) {
+  lista.innerHTML = '';
+  lugares.forEach((lugar) => {
+    const card = criarCard(lugar, favoritos.includes(lugar.id));
+    if (lugar.id === idNovo) {
+      card.classList.add('card--novo');
     }
-    elementoLista.appendChild(item);
+    lista.appendChild(card);
   });
-  elementoVazio.hidden = tarefas.length > 0;
+  vazio.hidden = lugares.length > 0;
 }
 
-export function atualizarContador(elemento, quantidade) {
+export function atualizarResultado(elemento, quantidade) {
   // Operador ternário para singular/plural
-  const palavra = quantidade === 1 ? 'tarefa pendente' : 'tarefas pendentes';
-  elemento.textContent = `${quantidade} ${palavra}`;
+  elemento.textContent =
+    quantidade === 1 ? '1 lugar encontrado' : `${quantidade} lugares encontrados`;
 }
 
-export function marcarFiltroAtivo(botoes, filtro) {
+// Marca qual botão de categoria está ativo
+export function marcarCategoria(botoes, categoria) {
   botoes.forEach((botao) => {
-    const ativo = botao.dataset.filtro === filtro;
-    botao.setAttribute('aria-pressed', String(ativo));
+    botao.setAttribute('aria-pressed', String(botao.dataset.categoria === categoria));
   });
 }
 
-export function mostrarErro(campo, elementoErro, mensagem) {
-  elementoErro.textContent = mensagem;
-  campo.setAttribute('aria-invalid', mensagem ? 'true' : 'false');
+// Preenche e abre a janela de detalhes
+export function abrirDetalhes(lugar) {
+  const categoria = CATEGORIAS[lugar.categoria];
+  const figura = document.getElementById('detalhes-figura');
+
+  document.getElementById('detalhes-titulo').textContent = lugar.nome;
+  document.getElementById('detalhes-cidade').textContent = lugar.cidade;
+  document.getElementById('detalhes-categoria').textContent = categoria.nome;
+  document.getElementById('detalhes-descricao').textContent = lugar.descricao;
+
+  if (lugar.imagem) {
+    figura.hidden = false;
+    const img = document.getElementById('detalhes-imagem');
+    img.src = lugar.imagem;
+    img.alt = lugar.alt;
+    // Crédito da foto, exigido pela licença Creative Commons
+    const credito = document.getElementById('detalhes-credito');
+    credito.innerHTML = '';
+    const link = document.createElement('a');
+    link.href = lugar.credito.fonte;
+    link.textContent = `Foto: ${lugar.credito.autor} (${lugar.credito.licenca})`;
+    credito.appendChild(link);
+  } else {
+    figura.hidden = true;
+  }
+
+  // Link para o Google Maps buscando o nome + cidade
+  const busca = encodeURIComponent(`${lugar.nome}, ${lugar.cidade}, SC`);
+  document.getElementById('detalhes-mapa').href =
+    `https://www.google.com/maps/search/?api=1&query=${busca}`;
+
+  document.getElementById('detalhes').showModal();
+}
+
+// Mostra ou limpa as mensagens de erro do formulário
+export function mostrarErros(form, erros) {
+  ['nome', 'cidade', 'categoria'].forEach((campo) => {
+    const elemento = form.elements[campo];
+    const mensagem = erros[campo] || '';
+    document.getElementById(`erro-${campo}`).textContent = mensagem;
+    elemento.setAttribute('aria-invalid', mensagem ? 'true' : 'false');
+  });
 }
 
 // Escreve na região aria-live para o leitor de tela anunciar

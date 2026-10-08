@@ -1,39 +1,40 @@
 /* ===========================================================
-   VARIÁVEIS DE COR (tema claro)
+   VARIÁVEIS DE COR – tema claro (inspirado na araucária e no pinhão)
    Contraste verificado: texto/fundo acima de 4.5:1 (WCAG AA)
    =========================================================== */
 :root {
-  --fundo: #f4f6f8;
-  --superficie: #ffffff;
-  --texto: #1d2329;
-  --texto-suave: #4a5561;
-  --primaria: #1a5fb4;
+  --fundo: #f6f2ea;
+  --superficie: #fffdf8;
+  --texto: #1f2a22;
+  --texto-suave: #4d5a50;
+  --primaria: #2e5e3e;          /* verde araucária */
   --primaria-texto: #ffffff;
+  --destaque: #8a4b22;          /* marrom pinhão */
   --perigo: #b3261e;
-  --borda: #c4ccd4;
-  --borda-controle: #6b7682; /* bordas de campos e botões: contraste 3:1+ (WCAG 1.4.11) */
-  --foco: #e66100;
-  --alta: #b3261e;
-  --media: #8a5a00;
-  --baixa: #26703a;
-  --raio: 8px;
+  --favorito: #c0264b;
+  --borda: #ddd3c3;
+  --borda-controle: #6f7a70;    /* bordas de campos e botões: contraste 3:1+ (WCAG 1.4.11) */
+  --foco: #c25e00;
+  --sombra: 0 2px 10px rgba(31, 42, 34, 0.08);
+  --raio: 12px;
+  --titulos: Georgia, "Times New Roman", serif;
 }
 
-/* Tema escuro: o JavaScript adiciona data-tema="escuro" no <html> */
+/* Tema escuro: o JavaScript coloca data-tema="escuro" no <html> */
 :root[data-tema="escuro"] {
-  --fundo: #14181c;
-  --superficie: #1f252b;
-  --texto: #eef1f4;
-  --texto-suave: #b4bec8;
-  --primaria: #8cb8f0;
-  --primaria-texto: #0d1a2b;
+  --fundo: #121814;
+  --superficie: #1b231d;
+  --texto: #eef2ec;
+  --texto-suave: #b7c2b8;
+  --primaria: #9fd3a9;
+  --primaria-texto: #0f2015;
+  --destaque: #e8a971;
   --perigo: #ff9b93;
-  --borda: #46505a;
-  --borda-controle: #8a96a3;
+  --favorito: #ff8fa8;
+  --borda: #38443a;
+  --borda-controle: #87958a;
   --foco: #ffb066;
-  --alta: #ff9b93;
-  --media: #f5c46a;
-  --baixa: #7fd494;
+  --sombra: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* ===========================================================
@@ -48,27 +49,30 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 1rem;           /* rem respeita o zoom do usuário */
-  line-height: 1.5;
+  font-size: 1rem;              /* rem respeita o zoom do usuário */
+  line-height: 1.6;
   background: var(--fundo);
   color: var(--texto);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
 
-main {
-  flex: 1;
-}
-
-h1, h2 {
+h1, h2, h3 {
+  font-family: var(--titulos);
   line-height: 1.2;
-  margin: 0 0 1rem;
+  margin: 0 0 0.75rem;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--primaria);
 }
 
 .container {
   width: 100%;
-  max-width: 960px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0 1rem;
 }
@@ -76,7 +80,7 @@ h1, h2 {
 /* Foco sempre visível para quem usa teclado (WCAG 2.4.7) */
 :focus-visible {
   outline: 3px solid var(--foco);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 /* Texto escondido na tela, mas lido pelo leitor de tela */
@@ -106,54 +110,60 @@ h1, h2 {
 }
 
 /* ===========================================================
-   CABEÇALHO E RODAPÉ
+   TOPO COM FOTO DE FUNDO
    =========================================================== */
-.cabecalho {
-  background: var(--superficie);
-  border-bottom: 1px solid var(--borda);
-  padding: 1rem 0;
-  margin-bottom: 1.5rem;
+.topo {
+  /* Camada escura por cima da foto garante contraste do texto branco */
+  background:
+    linear-gradient(rgba(10, 25, 15, 0.72), rgba(10, 25, 15, 0.82)),
+    url("../img/coxilha-rica.jpg") center / cover;
+  color: #ffffff;
+  padding-bottom: 3rem;
 }
 
-.cabecalho__interno {
+.topo__barra {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
-.cabecalho__titulo {
+.topo__marca {
   margin: 0;
-  font-size: 1.5rem;
+  font-family: var(--titulos);
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
-.rodape {
-  text-align: center;
-  color: var(--texto-suave);
-  font-size: 0.875rem;
-  padding: 1.5rem 0;
+.topo__chamada {
+  padding-top: 2rem;
 }
 
-/* ===========================================================
-   CARTÕES
-   =========================================================== */
-.cartao {
-  background: var(--superficie);
-  border: 1px solid var(--borda);
-  border-radius: var(--raio);
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
+.topo__chamada h1 {
+  font-size: clamp(1.75rem, 5vw, 3rem); /* cresce com a tela, entre um mínimo e um máximo */
+  max-width: 20ch;
+}
+
+.topo__chamada p {
+  max-width: 55ch;
+  font-size: 1.1rem;
+  margin: 0;
 }
 
 /* ===========================================================
    BOTÕES (área de toque mínima de 44px)
    =========================================================== */
 .botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 44px;
   padding: 0.5rem 1rem;
   font: inherit;
   font-weight: 600;
+  text-decoration: none;
   border-radius: var(--raio);
   border: 2px solid transparent;
   cursor: pointer;
@@ -164,36 +174,44 @@ h1, h2 {
   color: var(--primaria-texto);
 }
 
-.botao--secundario {
+/* Botão do topo: sempre sobre fundo escuro */
+.botao--contorno {
   background: transparent;
-  color: var(--texto);
-  border-color: var(--borda-controle);
+  color: #ffffff;
+  border-color: #ffffff;
 }
 
 .botao--perigo {
   background: transparent;
   color: var(--perigo);
   border-color: var(--perigo);
-  margin-top: 1rem;
-}
-
-.botao:hover {
-  filter: brightness(1.1);
 }
 
 /* ===========================================================
-   FORMULÁRIO
-   Celular: campos empilhados. Telas maiores: grid em linha.
+   BUSCA E FILTROS
    =========================================================== */
-.form {
-  display: grid;
-  gap: 1rem;
+/* Caixa de busca: "sobe" por cima da foto do topo (margem negativa) */
+.busca {
+  width: calc(100% - 2rem);
+  max-width: calc(1100px - 2rem);
+  margin-top: -2rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem 1rem 0.75rem;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
 }
 
-.form__campo {
+.busca h2 {
+  font-size: 1.25rem;
+}
+
+.busca__form {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 label {
@@ -201,7 +219,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
   min-height: 44px;
   padding: 0.5rem 0.75rem;
   font: inherit;
@@ -211,40 +230,15 @@ select {
   border-radius: var(--raio);
 }
 
-input[aria-invalid="true"] {
+input[aria-invalid="true"],
+select[aria-invalid="true"] {
   border-color: var(--perigo);
 }
 
-.form__erro {
-  color: var(--perigo);
-  font-size: 0.875rem;
-  margin: 0;
-  min-height: 1.3em;
-}
-
-/* ===========================================================
-   LISTA E FILTROS
-   =========================================================== */
-.lista-topo {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.contador {
-  color: var(--texto-suave);
-  margin: 0 0 1rem;
-}
-
 .filtros {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem;
   display: flex;
-  gap: 0.5rem;
   flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .filtro {
@@ -258,76 +252,262 @@ input[aria-invalid="true"] {
   cursor: pointer;
 }
 
-/* Filtro ativo: diferenciado por cor E por borda (não depende só da cor) */
+/* Filtro ativo: muda cor E peso da fonte (não depende só da cor) */
 .filtro[aria-pressed="true"] {
   background: var(--primaria);
   color: var(--primaria-texto);
   border-color: var(--primaria);
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.lista {
+.filtro--favorito[aria-pressed="true"] {
+  background: var(--favorito);
+  border-color: var(--favorito);
+  color: #ffffff;
+}
+
+:root[data-tema="escuro"] .filtro--favorito[aria-pressed="true"] {
+  color: #2a0a12;
+}
+
+.resultado {
+  color: var(--texto-suave);
+  margin: 0.75rem 0 0;
+}
+
+/* ===========================================================
+   CARDS DOS LUGARES
+   Grid automático: quantas colunas couberem, cada uma com no mínimo 260px
+   =========================================================== */
+.cards {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
 }
 
-.tarefa {
+.cards > li {
+  display: flex; /* faz todos os cards da linha terem a mesma altura */
+}
+
+.card {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--borda);
+  flex-direction: column;
+  width: 100%;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
 }
 
-.tarefa input[type="checkbox"] {
-  width: 24px;
-  height: 24px;
-  min-height: auto;
-  flex-shrink: 0;
-  accent-color: var(--primaria);
+.card__imagem,
+.card__sem-foto {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover; /* corta a foto sem deformar */
 }
 
-.tarefa__texto {
+.card__sem-foto {
+  display: grid;
+  place-items: center;
+  font-size: 3.5rem;
+  background: color-mix(in srgb, var(--primaria) 15%, var(--superficie));
+}
+
+.card__corpo {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  font-weight: 400;
-  word-break: break-word;
+  padding: 1rem;
 }
 
-.tarefa--concluida .tarefa__texto {
-  text-decoration: line-through;
+.card__titulo {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.card__cidade {
+  margin: 0 0 0.5rem;
   color: var(--texto-suave);
+  font-size: 0.9rem;
 }
 
-/* Etiqueta de prioridade: tem texto, não só cor */
+.card__resumo {
+  margin: 0 0 1rem;
+  flex: 1; /* empurra os botões para o fim do card */
+}
+
+.card__acoes {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.card__acoes .botao--primario {
+  flex: 1;
+}
+
+/* Etiqueta de categoria: tem texto, não só cor */
 .etiqueta {
-  font-size: 0.75rem;
+  align-self: flex-start;
+  margin: 0 0 0.5rem;
+  padding: 0 0.6rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 0.125rem 0.5rem;
   border: 2px solid currentColor;
   border-radius: 999px;
-  white-space: nowrap;
+  color: var(--destaque);
 }
 
-.etiqueta--alta  { color: var(--alta); }
-.etiqueta--media { color: var(--media); }
-.etiqueta--baixa { color: var(--baixa); }
+.etiqueta--natureza { color: var(--primaria); }
 
-.tarefa__remover {
+/* Botão de coração */
+.botao-favorito {
   min-width: 44px;
   min-height: 44px;
-  font-size: 1.25rem;
-  color: var(--perigo);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--favorito);
   background: transparent;
-  border: none;
+  border: 2px solid var(--borda-controle);
   border-radius: var(--raio);
   cursor: pointer;
 }
 
+.botao-favorito[aria-pressed="true"] {
+  border-color: var(--favorito);
+}
+
 .vazio {
-  color: var(--texto-suave);
   text-align: center;
-  padding: 1rem 0;
+  color: var(--texto-suave);
+  padding: 2rem 0;
+}
+
+/* ===========================================================
+   FORMULÁRIO DE SUGESTÃO
+   =========================================================== */
+.cartao {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form__erro {
+  color: var(--perigo);
+  font-size: 0.875rem;
+  margin: 0;
+  min-height: 1.3em;
+}
+
+/* ===========================================================
+   JANELA DE DETALHES (<dialog>)
+   =========================================================== */
+.detalhes {
+  width: min(640px, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  padding: 0;
+  border: none;
+  border-radius: var(--raio);
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Fundo escurecido atrás da janela */
+.detalhes::backdrop {
+  background: rgba(10, 20, 12, 0.7);
+}
+
+.detalhes__conteudo {
+  position: relative;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.detalhes__figura {
+  margin: 0 -1.5rem 1rem;
+}
+
+.detalhes__figura img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+}
+
+.detalhes__figura figcaption {
+  font-size: 0.8rem;
+  padding: 0.25rem 1.5rem;
+  color: var(--texto-suave);
+}
+
+.detalhes__figura[hidden] + h2 {
+  margin-top: 3.5rem;
+}
+
+.detalhes__fechar {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.65);
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.detalhes__info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.detalhes__info dt {
+  font-weight: 700;
+}
+
+.detalhes__info dd {
+  margin: 0;
+}
+
+/* ===========================================================
+   RODAPÉ
+   =========================================================== */
+.rodape {
+  background: var(--primaria);
+  color: var(--primaria-texto);
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.rodape a {
+  color: inherit;
+}
+
+.rodape p {
+  margin: 0.25rem 0;
 }
 
 /* ===========================================================
@@ -337,61 +517,86 @@ input[aria-invalid="true"] {
 
 /* Troca de tema suave */
 body,
-.cabecalho,
+.busca,
+.card,
 .cartao,
 input,
-select {
+select,
+textarea {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Botões "sobem" um pouco ao passar o mouse e "afundam" ao clicar */
+/* Card "levanta" e a foto dá um leve zoom ao passar o mouse */
+.card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(31, 42, 34, 0.18);
+}
+
+.card__imagem {
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card__imagem {
+  transform: scale(1.05);
+}
+
+/* Botões sobem no hover e afundam ao clicar */
 .botao,
-.filtro {
+.filtro,
+.botao-favorito {
   transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
 }
 
 .botao:hover,
 .filtro:hover {
   transform: translateY(-2px);
+  filter: brightness(1.08);
 }
 
 .botao:active,
-.filtro:active {
-  transform: translateY(0) scale(0.97);
+.filtro:active,
+.botao-favorito:active {
+  transform: scale(0.95);
 }
 
-/* Linha da tarefa destaca ao passar o mouse */
-.tarefa {
-  transition: background-color 0.2s ease;
+.botao-favorito:hover {
+  transform: scale(1.12);
 }
 
-.tarefa:hover {
-  background-color: color-mix(in srgb, var(--primaria) 8%, transparent);
-}
-
-/* Tarefa recém-adicionada entra deslizando de cima */
-.tarefa--nova {
-  animation: entrar 0.35s ease-out;
+/* Card recém-adicionado entra crescendo */
+.card--novo .card {
+  animation: entrar 0.45s ease-out;
 }
 
 @keyframes entrar {
   from {
     opacity: 0;
-    transform: translateY(-12px);
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Janela de detalhes aparece subindo */
+.detalhes[open] {
+  animation: abrir 0.25s ease-out;
+}
+
+@keyframes abrir {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Botão de remover gira ao passar o mouse */
-.tarefa__remover {
-  transition: transform 0.2s ease;
-}
-
-.tarefa__remover:hover {
-  transform: rotate(90deg) scale(1.15);
 }
 
 /* Pedaços de confete criados pelo JavaScript */
@@ -430,44 +635,45 @@ select {
    RESPONSIVIDADE (mobile-first)
    =========================================================== */
 
-/* Tablets e maiores: formulário em uma linha */
-@media (min-width: 600px) {
+/* Tablets e maiores */
+@media (min-width: 700px) {
+  .topo {
+    padding-bottom: 4.5rem;
+  }
+
+  .topo__chamada {
+    padding-top: 3rem;
+  }
+
+  /* Formulário de sugestão em duas colunas */
   .form {
-    grid-template-columns: 1fr 180px auto;
-    align-items: start;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form__campo--largo,
+  .form .botao {
+    grid-column: 1 / -1; /* ocupa a linha inteira */
   }
 
   .form .botao {
-    margin-top: 1.75rem; /* alinha o botão com os campos (abaixo do label) */
-  }
-
-  .cabecalho__titulo {
-    font-size: 2rem;
+    justify-self: start;
   }
 }
 
-/* Telas grandes: as duas seções lado a lado */
-@media (min-width: 900px) {
-  main.container {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 1.5rem;
-    align-items: start;
-  }
-
+/* Telas grandes: formulário em três colunas */
+@media (min-width: 1000px) {
   .form {
-    grid-template-columns: 1fr;
-  }
-
-  .form .botao {
-    margin-top: 0;
+    grid-template-columns: 2fr 1.5fr 1fr;
   }
 }
 
 /* Respeita quem pediu menos animação no sistema */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
     animation: none !important;
+    scroll-behavior: auto !important;
   }
 }

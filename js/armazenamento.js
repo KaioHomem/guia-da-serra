@@ -1,24 +1,27 @@
 // Módulo responsável por salvar e carregar dados do navegador (localStorage).
-// Assim as tarefas não somem ao recarregar a página.
+// Assim os favoritos e as sugestões não somem ao recarregar a página.
 
-const CHAVE_TAREFAS = 'tarefas';
-const CHAVE_TEMA = 'tema';
+const CHAVE_FAVORITOS = 'guia-favoritos';
+const CHAVE_SUGESTOES = 'guia-sugestoes';
+const CHAVE_TEMA = 'guia-tema';
 
-export function carregarTarefas() {
-  const texto = localStorage.getItem(CHAVE_TAREFAS);
-  // Se não houver nada salvo, começa com lista vazia
-  return texto ? JSON.parse(texto) : [];
+// Função "ajudante": lê um valor e converte de JSON.
+// Se não houver nada salvo, devolve o valor padrão.
+function ler(chave, padrao) {
+  const texto = localStorage.getItem(chave);
+  return texto ? JSON.parse(texto) : padrao;
 }
 
-export function salvarTarefas(tarefas) {
-  // localStorage só guarda texto, então convertemos o array para JSON
-  localStorage.setItem(CHAVE_TAREFAS, JSON.stringify(tarefas));
+// localStorage só guarda texto, então convertemos para JSON
+function gravar(chave, valor) {
+  localStorage.setItem(chave, JSON.stringify(valor));
 }
 
-export function carregarTema() {
-  return localStorage.getItem(CHAVE_TEMA) || 'claro';
-}
+export const carregarFavoritos = () => ler(CHAVE_FAVORITOS, []);
+export const salvarFavoritos = (favoritos) => gravar(CHAVE_FAVORITOS, favoritos);
 
-export function salvarTema(tema) {
-  localStorage.setItem(CHAVE_TEMA, tema);
-}
+export const carregarSugestoes = () => ler(CHAVE_SUGESTOES, []);
+export const salvarSugestoes = (sugestoes) => gravar(CHAVE_SUGESTOES, sugestoes);
+
+export const carregarTema = () => ler(CHAVE_TEMA, 'claro');
+export const salvarTema = (tema) => gravar(CHAVE_TEMA, tema);
