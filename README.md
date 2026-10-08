@@ -4,6 +4,8 @@ Guia turístico acessível e responsivo de **Lages e da Serra Catarinense**, fei
 
 Projeto da **Avaliação 02 – Desenvolvimento Web** do **IFSC Câmpus Lages** (2026/2).
 
+**🔗 Acesse o site: https://kaiohomem.github.io/guia-da-serra/**
+
 ![Cards de lugares do Guia da Serra, com fotos da Catedral de Lages, do Convento Franciscano, da Coxilha Rica e outros](docs/screenshot.jpg)
 
 ## Funcionalidades
