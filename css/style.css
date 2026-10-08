@@ -1,0 +1,473 @@
+/* ===========================================================
+   VARIÁVEIS DE COR (tema claro)
+   Contraste verificado: texto/fundo acima de 4.5:1 (WCAG AA)
+   =========================================================== */
+:root {
+  --fundo: #f4f6f8;
+  --superficie: #ffffff;
+  --texto: #1d2329;
+  --texto-suave: #4a5561;
+  --primaria: #1a5fb4;
+  --primaria-texto: #ffffff;
+  --perigo: #b3261e;
+  --borda: #c4ccd4;
+  --borda-controle: #6b7682; /* bordas de campos e botões: contraste 3:1+ (WCAG 1.4.11) */
+  --foco: #e66100;
+  --alta: #b3261e;
+  --media: #8a5a00;
+  --baixa: #26703a;
+  --raio: 8px;
+}
+
+/* Tema escuro: o JavaScript adiciona data-tema="escuro" no <html> */
+:root[data-tema="escuro"] {
+  --fundo: #14181c;
+  --superficie: #1f252b;
+  --texto: #eef1f4;
+  --texto-suave: #b4bec8;
+  --primaria: #8cb8f0;
+  --primaria-texto: #0d1a2b;
+  --perigo: #ff9b93;
+  --borda: #46505a;
+  --borda-controle: #8a96a3;
+  --foco: #ffb066;
+  --alta: #ff9b93;
+  --media: #f5c46a;
+  --baixa: #7fd494;
+}
+
+/* ===========================================================
+   BASE
+   =========================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;           /* rem respeita o zoom do usuário */
+  line-height: 1.5;
+  background: var(--fundo);
+  color: var(--texto);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+h1, h2 {
+  line-height: 1.2;
+  margin: 0 0 1rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Foco sempre visível para quem usa teclado (WCAG 2.4.7) */
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+/* Texto escondido na tela, mas lido pelo leitor de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Link "pular para o conteúdo": só aparece ao receber foco */
+.pular-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  background: var(--primaria);
+  color: var(--primaria-texto);
+  padding: 0.5rem 1rem;
+  border-radius: var(--raio);
+  z-index: 10;
+}
+
+.pular-link:focus {
+  top: 1rem;
+}
+
+/* ===========================================================
+   CABEÇALHO E RODAPÉ
+   =========================================================== */
+.cabecalho {
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+}
+
+.cabecalho__interno {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cabecalho__titulo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.rodape {
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+  padding: 1.5rem 0;
+}
+
+/* ===========================================================
+   CARTÕES
+   =========================================================== */
+.cartao {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ===========================================================
+   BOTÕES (área de toque mínima de 44px)
+   =========================================================== */
+.botao {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--raio);
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.botao--primario {
+  background: var(--primaria);
+  color: var(--primaria-texto);
+}
+
+.botao--secundario {
+  background: transparent;
+  color: var(--texto);
+  border-color: var(--borda-controle);
+}
+
+.botao--perigo {
+  background: transparent;
+  color: var(--perigo);
+  border-color: var(--perigo);
+  margin-top: 1rem;
+}
+
+.botao:hover {
+  filter: brightness(1.1);
+}
+
+/* ===========================================================
+   FORMULÁRIO
+   Celular: campos empilhados. Telas maiores: grid em linha.
+   =========================================================== */
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input,
+select {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  color: var(--texto);
+  background: var(--superficie);
+  border: 2px solid var(--borda-controle);
+  border-radius: var(--raio);
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--perigo);
+}
+
+.form__erro {
+  color: var(--perigo);
+  font-size: 0.875rem;
+  margin: 0;
+  min-height: 1.3em;
+}
+
+/* ===========================================================
+   LISTA E FILTROS
+   =========================================================== */
+.lista-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.contador {
+  color: var(--texto-suave);
+  margin: 0 0 1rem;
+}
+
+.filtros {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filtro {
+  min-height: 44px;
+  padding: 0.25rem 1rem;
+  font: inherit;
+  color: var(--texto);
+  background: transparent;
+  border: 2px solid var(--borda-controle);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* Filtro ativo: diferenciado por cor E por borda (não depende só da cor) */
+.filtro[aria-pressed="true"] {
+  background: var(--primaria);
+  color: var(--primaria-texto);
+  border-color: var(--primaria);
+  font-weight: 600;
+}
+
+.lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tarefa {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.tarefa input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  min-height: auto;
+  flex-shrink: 0;
+  accent-color: var(--primaria);
+}
+
+.tarefa__texto {
+  flex: 1;
+  font-weight: 400;
+  word-break: break-word;
+}
+
+.tarefa--concluida .tarefa__texto {
+  text-decoration: line-through;
+  color: var(--texto-suave);
+}
+
+/* Etiqueta de prioridade: tem texto, não só cor */
+.etiqueta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.125rem 0.5rem;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.etiqueta--alta  { color: var(--alta); }
+.etiqueta--media { color: var(--media); }
+.etiqueta--baixa { color: var(--baixa); }
+
+.tarefa__remover {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.25rem;
+  color: var(--perigo);
+  background: transparent;
+  border: none;
+  border-radius: var(--raio);
+  cursor: pointer;
+}
+
+.vazio {
+  color: var(--texto-suave);
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* ===========================================================
+   EFEITOS E ANIMAÇÕES
+   (desligados automaticamente por prefers-reduced-motion, no fim)
+   =========================================================== */
+
+/* Troca de tema suave */
+body,
+.cabecalho,
+.cartao,
+input,
+select {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Botões "sobem" um pouco ao passar o mouse e "afundam" ao clicar */
+.botao,
+.filtro {
+  transition: transform 0.15s ease, background-color 0.2s ease, filter 0.2s ease;
+}
+
+.botao:hover,
+.filtro:hover {
+  transform: translateY(-2px);
+}
+
+.botao:active,
+.filtro:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Linha da tarefa destaca ao passar o mouse */
+.tarefa {
+  transition: background-color 0.2s ease;
+}
+
+.tarefa:hover {
+  background-color: color-mix(in srgb, var(--primaria) 8%, transparent);
+}
+
+/* Tarefa recém-adicionada entra deslizando de cima */
+.tarefa--nova {
+  animation: entrar 0.35s ease-out;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Botão de remover gira ao passar o mouse */
+.tarefa__remover {
+  transition: transform 0.2s ease;
+}
+
+.tarefa__remover:hover {
+  transform: rotate(90deg) scale(1.15);
+}
+
+/* Pedaços de confete criados pelo JavaScript */
+.confete {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  pointer-events: none; /* não atrapalha cliques */
+  z-index: 100;
+}
+
+/* Notificação flutuante (toast) */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translate(-50%, 150%);
+  opacity: 0;
+  background: var(--texto);
+  color: var(--fundo);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--raio);
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 50;
+}
+
+.toast--visivel {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+/* ===========================================================
+   RESPONSIVIDADE (mobile-first)
+   =========================================================== */
+
+/* Tablets e maiores: formulário em uma linha */
+@media (min-width: 600px) {
+  .form {
+    grid-template-columns: 1fr 180px auto;
+    align-items: start;
+  }
+
+  .form .botao {
+    margin-top: 1.75rem; /* alinha o botão com os campos (abaixo do label) */
+  }
+
+  .cabecalho__titulo {
+    font-size: 2rem;
+  }
+}
+
+/* Telas grandes: as duas seções lado a lado */
+@media (min-width: 900px) {
+  main.container {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .form .botao {
+    margin-top: 0;
+  }
+}
+
+/* Respeita quem pediu menos animação no sistema */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
