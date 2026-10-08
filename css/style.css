@@ -1,26 +1,41 @@
 /* ===========================================================
-   VARIÁVEIS DE COR – tema claro (inspirado na araucária e no pinhão)
+   style.css – A APARÊNCIA DO SITE
+   Ordem do arquivo:
+   1. Variáveis de cor (tema claro e escuro)
+   2. Base (regras gerais)
+   3. Topo, botões, busca, cards, formulário, janela, rodapé
+   4. Efeitos e animações
+   5. Responsividade (media queries)
+   =========================================================== */
+
+
+/* ===========================================================
+   1. VARIÁVEIS DE COR – tema claro (inspirado na araucária e no pinhão)
+   Variável CSS = um nome que guarda um valor. Escreve "--nome: valor"
+   e usa com "var(--nome)". Trocando a variável, muda o site inteiro.
    Contraste verificado: texto/fundo acima de 4.5:1 (WCAG AA)
    =========================================================== */
-:root {
-  --fundo: #f6f2ea;
-  --superficie: #fffdf8;
-  --texto: #1f2a22;
-  --texto-suave: #4d5a50;
-  --primaria: #2e5e3e;          /* verde araucária */
-  --primaria-texto: #ffffff;
-  --destaque: #8a4b22;          /* marrom pinhão */
-  --perigo: #b3261e;
-  --favorito: #c0264b;
-  --borda: #ddd3c3;
-  --borda-controle: #6f7a70;    /* bordas de campos e botões: contraste 3:1+ (WCAG 1.4.11) */
-  --foco: #c25e00;
-  --sombra: 0 2px 10px rgba(31, 42, 34, 0.08);
-  --raio: 12px;
-  --titulos: Georgia, "Times New Roman", serif;
+:root {                          /* :root = a tag <html>, a raiz da página */
+  --fundo: #f6f2ea;              /* creme do fundo da página */
+  --superficie: #fffdf8;         /* fundo dos cards e caixas */
+  --texto: #1f2a22;              /* cor do texto principal */
+  --texto-suave: #4d5a50;        /* texto secundário (cidade, contador) */
+  --primaria: #2e5e3e;           /* verde araucária: botões e destaques */
+  --primaria-texto: #ffffff;     /* texto em cima da cor primária */
+  --destaque: #8a4b22;           /* marrom pinhão: etiquetas */
+  --perigo: #b3261e;             /* vermelho: erros e botão remover */
+  --favorito: #c0264b;           /* rosa do coração */
+  --borda: #ddd3c3;              /* bordas decorativas */
+  --borda-controle: #6f7a70;     /* bordas de campos e botões: contraste 3:1+ (WCAG 1.4.11) */
+  --foco: #c25e00;               /* contorno laranja de quem navega com Tab */
+  --sombra: 0 2px 10px rgba(31, 42, 34, 0.08); /* sombra suave dos cards */
+  --raio: 12px;                  /* arredondamento dos cantos */
+  --titulos: Georgia, "Times New Roman", serif; /* fonte dos títulos */
 }
 
-/* Tema escuro: o JavaScript coloca data-tema="escuro" no <html> */
+/* Tema escuro: o JavaScript coloca data-tema="escuro" no <html>.
+   Só as cores mudam; todo o resto do CSS continua igual,
+   porque usa as variáveis. */
 :root[data-tema="escuro"] {
   --fundo: #121814;
   --superficie: #1b231d;
@@ -37,9 +52,13 @@
   --sombra: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
+
 /* ===========================================================
-   BASE
+   2. BASE – regras que valem para a página toda
    =========================================================== */
+
+/* box-sizing: border-box = a largura inclui a borda e o espaço interno.
+   Evita elementos "estourando" o tamanho. * = todos os elementos */
 *,
 *::before,
 *::after {
@@ -47,43 +66,49 @@
 }
 
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 1rem;              /* rem respeita o zoom do usuário */
-  line-height: 1.6;
+  margin: 0;                     /* tira a margem padrão do navegador */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; /* fonte do sistema */
+  font-size: 1rem;               /* rem = relativo à fonte do usuário; respeita o zoom (acessibilidade) */
+  line-height: 1.6;              /* espaço entre linhas: facilita a leitura */
   background: var(--fundo);
   color: var(--texto);
 }
 
+/* Títulos: fonte com serifa e sem margem em cima */
 h1, h2, h3 {
   font-family: var(--titulos);
   line-height: 1.2;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.75rem;           /* em cima 0, laterais 0, embaixo 0.75rem */
 }
 
+/* Imagens nunca ficam maiores que a caixa onde estão (responsivo) */
 img {
   max-width: 100%;
-  display: block;
+  display: block;                /* tira o espacinho que fica embaixo de imagens */
 }
 
 a {
   color: var(--primaria);
 }
 
+/* .container: centraliza o conteúdo e limita a largura em telas grandes */
 .container {
   width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  max-width: 1100px;             /* nunca passa de 1100px de largura */
+  margin: 0 auto;                /* "auto" nas laterais = centralizado */
+  padding: 0 1rem;               /* respiro de 1rem nas laterais (importante no celular) */
 }
 
-/* Foco sempre visível para quem usa teclado (WCAG 2.4.7) */
+/* Foco sempre visível para quem usa teclado (WCAG 2.4.7).
+   :focus-visible aparece ao usar Tab, mas não ao clicar com o mouse */
 :focus-visible {
   outline: 3px solid var(--foco);
-  outline-offset: 3px;
+  outline-offset: 3px;           /* afasta o contorno 3px do elemento */
 }
 
-/* Texto escondido na tela, mas lido pelo leitor de tela */
+/* .sr-only ("screen reader only"): esconde da tela,
+   mas o leitor de tela continua lendo. Não usa display:none
+   porque display:none esconde do leitor também */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -93,7 +118,7 @@ a {
   white-space: nowrap;
 }
 
-/* Link "pular para o conteúdo": só aparece ao receber foco */
+/* Link "pular para o conteúdo": fica fora da tela (top: -100px) */
 .pular-link {
   position: absolute;
   left: 1rem;
@@ -102,30 +127,34 @@ a {
   color: var(--primaria-texto);
   padding: 0.5rem 1rem;
   border-radius: var(--raio);
-  z-index: 10;
+  z-index: 10;                   /* fica por cima de tudo */
 }
 
+/* ...e aparece quando recebe o foco do Tab */
 .pular-link:focus {
   top: 1rem;
 }
 
+
 /* ===========================================================
-   TOPO COM FOTO DE FUNDO
+   3. TOPO COM FOTO DE FUNDO
    =========================================================== */
 .topo {
-  /* Camada escura por cima da foto garante contraste do texto branco */
+  /* Duas camadas: um degradê escuro POR CIMA da foto.
+     A camada escura garante contraste para o texto branco */
   background:
     linear-gradient(rgba(10, 25, 15, 0.72), rgba(10, 25, 15, 0.82)),
-    url("../img/coxilha-rica.jpg") center / cover;
+    url("../img/coxilha-rica.jpg") center / cover; /* cover = a foto cobre todo o espaço */
   color: #ffffff;
-  padding-bottom: 3rem;
+  padding-bottom: 3rem;          /* espaço embaixo, onde a caixa de busca "sobe" */
 }
 
+/* Barra de cima: Flexbox coloca o nome e o botão lado a lado */
 .topo__barra {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+  justify-content: space-between; /* um na esquerda, outro na direita */
+  align-items: center;            /* alinhados verticalmente no meio */
+  gap: 1rem;                      /* espaço entre eles */
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
@@ -134,7 +163,7 @@ a {
   margin: 0;
   font-family: var(--titulos);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 700;              /* negrito */
 }
 
 .topo__chamada {
@@ -142,39 +171,44 @@ a {
 }
 
 .topo__chamada h1 {
-  font-size: clamp(1.75rem, 5vw, 3rem); /* cresce com a tela, entre um mínimo e um máximo */
-  max-width: 20ch;
+  /* clamp(mínimo, ideal, máximo): o título cresce com a tela (5vw = 5% da largura),
+     mas nunca fica menor que 1.75rem nem maior que 3rem */
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  max-width: 20ch;               /* ch = largura de um caractere: no máximo ~20 letras por linha */
 }
 
 .topo__chamada p {
-  max-width: 55ch;
+  max-width: 55ch;               /* linhas curtas são mais fáceis de ler */
   font-size: 1.1rem;
   margin: 0;
 }
 
+
 /* ===========================================================
-   BOTÕES (área de toque mínima de 44px)
+   BOTÕES
+   Altura mínima de 44px: tamanho bom para o dedo no celular
    =========================================================== */
 .botao {
-  display: inline-flex;
+  display: inline-flex;          /* flex permite centralizar o texto */
   align-items: center;
   justify-content: center;
   min-height: 44px;
   padding: 0.5rem 1rem;
-  font: inherit;
+  font: inherit;                 /* usa a mesma fonte do resto da página */
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: none;         /* tira o sublinhado (o link "Ver no mapa" também usa .botao) */
   border-radius: var(--raio);
   border: 2px solid transparent;
-  cursor: pointer;
+  cursor: pointer;               /* cursor de "mãozinha" */
 }
 
+/* Variações do botão (modificadores com "--") */
 .botao--primario {
   background: var(--primaria);
   color: var(--primaria-texto);
 }
 
-/* Botão do topo: sempre sobre fundo escuro */
+/* Botão do topo: sempre branco, porque fica sobre a foto escura */
 .botao--contorno {
   background: transparent;
   color: #ffffff;
@@ -187,16 +221,18 @@ a {
   border-color: var(--perigo);
 }
 
+
 /* ===========================================================
    BUSCA E FILTROS
    =========================================================== */
-/* Caixa de busca: "sobe" por cima da foto do topo (margem negativa) */
+
+/* Caixa de busca: margem negativa faz ela "subir" por cima da foto do topo */
 .busca {
-  width: calc(100% - 2rem);
+  width: calc(100% - 2rem);      /* calc faz conta: largura total menos 2rem */
   max-width: calc(1100px - 2rem);
-  margin-top: -2rem;
+  margin-top: -2rem;             /* margem negativa = sobe 2rem */
   margin-bottom: 1.5rem;
-  padding: 1.25rem 1rem 0.75rem;
+  padding: 1.25rem 1rem 0.75rem; /* em cima, laterais, embaixo */
   background: var(--superficie);
   border: 1px solid var(--borda);
   border-radius: var(--raio);
@@ -207,9 +243,10 @@ a {
   font-size: 1.25rem;
 }
 
+/* Rótulo em cima do campo (coluna) */
 .busca__form {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;        /* empilha: label em cima, campo embaixo */
   gap: 0.25rem;
   margin-bottom: 1rem;
 }
@@ -218,6 +255,7 @@ label {
   font-weight: 600;
 }
 
+/* Campos de texto, seleção e área de texto */
 input,
 select,
 textarea {
@@ -230,11 +268,13 @@ textarea {
   border-radius: var(--raio);
 }
 
+/* Campo com erro (o JavaScript coloca aria-invalid="true"): borda vermelha */
 input[aria-invalid="true"],
 select[aria-invalid="true"] {
   border-color: var(--perigo);
 }
 
+/* Botões de filtro lado a lado; flex-wrap deixa quebrar linha no celular */
 .filtros {
   display: flex;
   flex-wrap: wrap;
@@ -248,11 +288,12 @@ select[aria-invalid="true"] {
   color: var(--texto);
   background: transparent;
   border: 2px solid var(--borda-controle);
-  border-radius: 999px;
+  border-radius: 999px;          /* número grande = formato de pílula */
   cursor: pointer;
 }
 
-/* Filtro ativo: muda cor E peso da fonte (não depende só da cor) */
+/* Filtro ativo: o CSS lê o aria-pressed que o JavaScript muda.
+   Muda a cor E o peso da fonte (não depende só da cor, para daltônicos) */
 .filtro[aria-pressed="true"] {
   background: var(--primaria);
   color: var(--primaria-texto);
@@ -260,12 +301,14 @@ select[aria-invalid="true"] {
   font-weight: 700;
 }
 
+/* "Só favoritos" ligado fica rosa */
 .filtro--favorito[aria-pressed="true"] {
   background: var(--favorito);
   border-color: var(--favorito);
   color: #ffffff;
 }
 
+/* No tema escuro o rosa é claro, então o texto fica escuro (contraste) */
 :root[data-tema="escuro"] .filtro--favorito[aria-pressed="true"] {
   color: #2a0a12;
 }
@@ -275,23 +318,28 @@ select[aria-invalid="true"] {
   margin: 0.75rem 0 0;
 }
 
+
 /* ===========================================================
    CARDS DOS LUGARES
-   Grid automático: quantas colunas couberem, cada uma com no mínimo 260px
    =========================================================== */
+
+/* Grid automático: "repeat(auto-fill, minmax(260px, 1fr))" =
+   coloca quantas colunas couberem, cada uma com no mínimo 260px.
+   Celular: 1 coluna; tablet: 2; computador: 3. Sem media query! */
 .cards {
-  list-style: none;
+  list-style: none;              /* tira as bolinhas da lista */
   padding: 0;
   margin: 0 0 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
+  gap: 1.25rem;                  /* espaço entre os cards */
 }
 
 .cards > li {
-  display: flex; /* faz todos os cards da linha terem a mesma altura */
+  display: flex;                 /* faz todos os cards da linha terem a mesma altura */
 }
 
+/* O card em si: coluna com foto em cima e texto embaixo */
 .card {
   display: flex;
   flex-direction: column;
@@ -300,27 +348,30 @@ select[aria-invalid="true"] {
   border: 1px solid var(--borda);
   border-radius: var(--raio);
   box-shadow: var(--sombra);
-  overflow: hidden;
+  overflow: hidden;              /* corta a foto nos cantos arredondados */
 }
 
+/* Foto (ou quadro sem foto) com proporção fixa */
 .card__imagem,
 .card__sem-foto {
   width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: cover; /* corta a foto sem deformar */
+  aspect-ratio: 3 / 2;           /* sempre 3 de largura para 2 de altura */
+  object-fit: cover;             /* corta a foto para caber, sem deformar */
 }
 
+/* Quadro com ícone, para lugares sugeridos sem foto */
 .card__sem-foto {
   display: grid;
-  place-items: center;
+  place-items: center;           /* centraliza o ícone no meio */
   font-size: 3.5rem;
+  /* color-mix: mistura 15% da cor primária com a cor da superfície */
   background: color-mix(in srgb, var(--primaria) 15%, var(--superficie));
 }
 
 .card__corpo {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1;                       /* ocupa todo o espaço que sobrar no card */
   padding: 1rem;
 }
 
@@ -337,34 +388,37 @@ select[aria-invalid="true"] {
 
 .card__resumo {
   margin: 0 0 1rem;
-  flex: 1; /* empurra os botões para o fim do card */
+  flex: 1;                       /* cresce e empurra os botões para o fim do card */
 }
 
+/* Botões do card lado a lado */
 .card__acoes {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
+/* "Ver detalhes" ocupa todo o espaço que sobra ao lado do coração */
 .card__acoes .botao--primario {
   flex: 1;
 }
 
-/* Etiqueta de categoria: tem texto, não só cor */
+/* Etiqueta da categoria: tem texto, não só cor (acessibilidade) */
 .etiqueta {
-  align-self: flex-start;
+  align-self: flex-start;        /* fica do tamanho do texto, não estica */
   margin: 0 0 0.5rem;
   padding: 0 0.6rem;
   font-size: 0.8rem;
   font-weight: 700;
-  border: 2px solid currentColor;
+  border: 2px solid currentColor; /* currentColor = usa a mesma cor do texto */
   border-radius: 999px;
   color: var(--destaque);
 }
 
+/* Etiqueta de Natureza fica verde */
 .etiqueta--natureza { color: var(--primaria); }
 
-/* Botão de coração */
+/* Botão de coração (favorito) */
 .botao-favorito {
   min-width: 44px;
   min-height: 44px;
@@ -377,19 +431,24 @@ select[aria-invalid="true"] {
   cursor: pointer;
 }
 
+/* Favoritado: borda rosa */
 .botao-favorito[aria-pressed="true"] {
   border-color: var(--favorito);
 }
 
+/* Mensagem "Nenhum lugar encontrado" */
 .vazio {
   text-align: center;
   color: var(--texto-suave);
   padding: 2rem 0;
 }
 
+
 /* ===========================================================
    FORMULÁRIO DE SUGESTÃO
    =========================================================== */
+
+/* Caixa branca em volta do formulário */
 .cartao {
   background: var(--superficie);
   border: 1px solid var(--borda);
@@ -399,17 +458,21 @@ select[aria-invalid="true"] {
   margin-bottom: 2rem;
 }
 
+/* No celular: campos empilhados (uma coluna). Muda nas media queries lá embaixo */
 .form {
   display: grid;
   gap: 1rem;
 }
 
+/* Cada campo: rótulo, campo e erro empilhados */
 .form__campo {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
+/* Mensagem de erro em vermelho.
+   min-height reserva o espaço, então a página não "pula" quando o erro aparece */
 .form__erro {
   color: var(--perigo);
   font-size: 0.875rem;
@@ -417,12 +480,13 @@ select[aria-invalid="true"] {
   min-height: 1.3em;
 }
 
+
 /* ===========================================================
    JANELA DE DETALHES (<dialog>)
    =========================================================== */
 .detalhes {
-  width: min(640px, calc(100% - 2rem));
-  max-height: calc(100% - 2rem);
+  width: min(640px, calc(100% - 2rem)); /* min = usa o MENOR: 640px ou a tela menos 2rem */
+  max-height: calc(100% - 2rem);        /* nunca maior que a tela */
   padding: 0;
   border: none;
   border-radius: var(--raio);
@@ -431,16 +495,17 @@ select[aria-invalid="true"] {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
 }
 
-/* Fundo escurecido atrás da janela */
+/* ::backdrop = o fundo escurecido atrás da janela aberta */
 .detalhes::backdrop {
-  background: rgba(10, 20, 12, 0.7);
+  background: rgba(10, 20, 12, 0.7);    /* preto esverdeado com 70% de opacidade */
 }
 
 .detalhes__conteudo {
-  position: relative;
+  position: relative;            /* referência para posicionar o botão ✕ */
   padding: 0 1.5rem 1.5rem;
 }
 
+/* Margens negativas fazem a foto encostar nas bordas da janela */
 .detalhes__figura {
   margin: 0 -1.5rem 1rem;
 }
@@ -451,34 +516,39 @@ select[aria-invalid="true"] {
   object-fit: cover;
 }
 
+/* Crédito da foto, pequeno */
 .detalhes__figura figcaption {
   font-size: 0.8rem;
   padding: 0.25rem 1.5rem;
   color: var(--texto-suave);
 }
 
+/* Lugar sem foto: dá espaço em cima do título para não ficar embaixo do ✕.
+   "+" = o h2 que vem logo depois da figura escondida */
 .detalhes__figura[hidden] + h2 {
   margin-top: 3.5rem;
 }
 
+/* Botão ✕: redondo, no canto de cima à direita, por cima da foto */
 .detalhes__fechar {
-  position: absolute;
+  position: absolute;            /* posição livre dentro de .detalhes__conteudo */
   top: 0.75rem;
   right: 0.75rem;
-  z-index: 1;
+  z-index: 1;                    /* fica por cima da foto */
   width: 44px;
   height: 44px;
   font-size: 1.25rem;
   color: #ffffff;
   background: rgba(0, 0, 0, 0.65);
   border: 2px solid #ffffff;
-  border-radius: 50%;
+  border-radius: 50%;            /* 50% = círculo */
   cursor: pointer;
 }
 
+/* Lista Cidade/Categoria em duas colunas: termo | valor */
 .detalhes__info {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr; /* 1ª coluna do tamanho do texto, 2ª pega o resto */
   gap: 0.25rem 1rem;
   margin: 0 0 1rem;
 }
@@ -490,6 +560,7 @@ select[aria-invalid="true"] {
 .detalhes__info dd {
   margin: 0;
 }
+
 
 /* ===========================================================
    RODAPÉ
@@ -503,19 +574,22 @@ select[aria-invalid="true"] {
 }
 
 .rodape a {
-  color: inherit;
+  color: inherit;                /* inherit = usa a mesma cor do rodapé */
 }
 
 .rodape p {
   margin: 0.25rem 0;
 }
 
+
 /* ===========================================================
-   EFEITOS E ANIMAÇÕES
-   (desligados automaticamente por prefers-reduced-motion, no fim)
+   4. EFEITOS E ANIMAÇÕES
+   transition = anima a MUDANÇA de uma propriedade (ex.: cor no hover).
+   animation + @keyframes = animação com quadros definidos.
+   Tudo é desligado lá no fim se o usuário pediu menos movimento.
    =========================================================== */
 
-/* Troca de tema suave */
+/* Troca de tema suave: as cores mudam em 0.3 segundos */
 body,
 .busca,
 .card,
@@ -526,25 +600,26 @@ textarea {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Card "levanta" e a foto dá um leve zoom ao passar o mouse */
+/* Card "levanta" ao passar o mouse */
 .card {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(31, 42, 34, 0.18);
+.card:hover {                    /* :hover = mouse em cima */
+  transform: translateY(-4px);   /* sobe 4px */
+  box-shadow: 0 8px 24px rgba(31, 42, 34, 0.18); /* sombra maior */
 }
 
+/* Foto dá um leve zoom ao passar o mouse no card */
 .card__imagem {
   transition: transform 0.4s ease;
 }
 
 .card:hover .card__imagem {
-  transform: scale(1.05);
+  transform: scale(1.05);        /* 5% maior */
 }
 
-/* Botões sobem no hover e afundam ao clicar */
+/* Botões sobem no hover e "afundam" ao clicar */
 .botao,
 .filtro,
 .botao-favorito {
@@ -554,36 +629,37 @@ textarea {
 .botao:hover,
 .filtro:hover {
   transform: translateY(-2px);
-  filter: brightness(1.08);
+  filter: brightness(1.08);      /* 8% mais claro */
 }
 
-.botao:active,
+.botao:active,                   /* :active = no momento do clique */
 .filtro:active,
 .botao-favorito:active {
-  transform: scale(0.95);
+  transform: scale(0.95);        /* 5% menor */
 }
 
 .botao-favorito:hover {
-  transform: scale(1.12);
+  transform: scale(1.12);        /* coração cresce */
 }
 
-/* Card recém-adicionado entra crescendo */
+/* Card recém-adicionado entra crescendo (o JavaScript coloca a classe card--novo) */
 .card--novo .card {
   animation: entrar 0.45s ease-out;
 }
 
+/* @keyframes: define os quadros da animação "entrar" */
 @keyframes entrar {
-  from {
+  from {                         /* começo: invisível e 90% do tamanho */
     opacity: 0;
     transform: scale(0.9);
   }
-  to {
+  to {                           /* fim: visível e tamanho normal */
     opacity: 1;
     transform: scale(1);
   }
 }
 
-/* Janela de detalhes aparece subindo */
+/* Janela de detalhes aparece subindo ([open] = quando está aberta) */
 .detalhes[open] {
   animation: abrir 0.25s ease-out;
 }
@@ -591,7 +667,7 @@ textarea {
 @keyframes abrir {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(20px); /* começa 20px mais baixo */
   }
   to {
     opacity: 1;
@@ -599,24 +675,24 @@ textarea {
   }
 }
 
-/* Pedaços de confete criados pelo JavaScript */
+/* Pedaços de confete criados pelo JavaScript (efeitos.js) */
 .confete {
-  position: fixed;
+  position: fixed;               /* posição em relação à tela */
   width: 8px;
   height: 8px;
   border-radius: 2px;
-  pointer-events: none; /* não atrapalha cliques */
+  pointer-events: none;          /* o mouse "atravessa" o confete: não atrapalha cliques */
   z-index: 100;
 }
 
-/* Notificação flutuante (toast) */
+/* Notificação flutuante (toast): começa escondida embaixo da tela */
 .toast {
   position: fixed;
   left: 50%;
   bottom: 1.5rem;
-  transform: translate(-50%, 150%);
+  transform: translate(-50%, 150%); /* -50% centraliza; 150% empurra para baixo, fora da tela */
   opacity: 0;
-  background: var(--texto);
+  background: var(--texto);      /* cores invertidas para chamar atenção */
   color: var(--fundo);
   padding: 0.75rem 1.25rem;
   border-radius: var(--raio);
@@ -626,19 +702,23 @@ textarea {
   z-index: 50;
 }
 
+/* Com esta classe (colocada pelo JavaScript) o toast sobe e aparece */
 .toast--visivel {
   transform: translate(-50%, 0);
   opacity: 1;
 }
 
+
 /* ===========================================================
-   RESPONSIVIDADE (mobile-first)
+   5. RESPONSIVIDADE (mobile-first)
+   O CSS acima é para CELULAR. As media queries abaixo
+   acrescentam ajustes quando a tela é MAIOR que um tamanho.
    =========================================================== */
 
-/* Tablets e maiores */
+/* Telas a partir de 700px (tablets e maiores) */
 @media (min-width: 700px) {
   .topo {
-    padding-bottom: 4.5rem;
+    padding-bottom: 4.5rem;      /* topo mais alto */
   }
 
   .topo__chamada {
@@ -647,27 +727,30 @@ textarea {
 
   /* Formulário de sugestão em duas colunas */
   .form {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; /* 1fr = uma fração do espaço; duas colunas iguais */
   }
 
+  /* Descrição e botão ocupam a linha inteira */
   .form__campo--largo,
   .form .botao {
-    grid-column: 1 / -1; /* ocupa a linha inteira */
+    grid-column: 1 / -1;         /* da primeira até a última coluna */
   }
 
   .form .botao {
-    justify-self: start;
+    justify-self: start;         /* botão não estica; fica do tamanho do texto */
   }
 }
 
-/* Telas grandes: formulário em três colunas */
+/* Telas a partir de 1000px (computador): formulário em três colunas */
 @media (min-width: 1000px) {
   .form {
-    grid-template-columns: 2fr 1.5fr 1fr;
+    grid-template-columns: 2fr 1.5fr 1fr; /* nome maior, cidade média, categoria menor */
   }
 }
 
-/* Respeita quem pediu menos animação no sistema */
+/* Acessibilidade: se o usuário pediu "reduzir movimento" no sistema,
+   desliga todas as animações e transições.
+   !important = vale mais que qualquer outra regra */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
