@@ -1,7 +1,13 @@
-// Módulo com os dados dos lugares.
-// Cada lugar é um OBJETO, e todos ficam guardados num ARRAY.
+// =============================================================
+// dados.js – A "BASE DE DADOS" DO GUIA
+// Aqui ficam só as informações dos lugares. Não tem lógica nenhuma.
 // Fotos: Wikimedia Commons (licenças livres, créditos no campo "credito").
+// =============================================================
 
+// "export" = deixa outros arquivos usarem esta variável com "import".
+// "const" = variável que não vai ser trocada por outra.
+// CATEGORIAS é um OBJETO: cada chave (natureza, historia...) guarda outro objeto
+// com o nome bonito para mostrar na tela e um ícone.
 export const CATEGORIAS = {
   natureza: { nome: 'Natureza', icone: '🌲' },
   historia: { nome: 'História', icone: '🏛️' },
@@ -9,6 +15,17 @@ export const CATEGORIAS = {
   cultura: { nome: 'Cultura e lazer', icone: '🎉' },
 };
 
+// LUGARES é um ARRAY (lista) de OBJETOS. Cada { ... } é um lugar.
+// Todos os lugares têm os mesmos campos:
+//   id        -> identificador único, usado pelo código para achar o lugar
+//   nome      -> nome que aparece no card
+//   cidade    -> cidade onde fica
+//   categoria -> uma das chaves de CATEGORIAS (natureza, historia...)
+//   resumo    -> texto curto do card
+//   descricao -> texto completo da janela de detalhes
+//   imagem    -> caminho da foto na pasta img/
+//   alt       -> descrição da foto para quem usa leitor de tela (acessibilidade)
+//   credito   -> autor e licença da foto (a licença exige dar o crédito)
 export const LUGARES = [
   {
     id: 'catedral',
