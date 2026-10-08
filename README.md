@@ -113,6 +113,19 @@ Cada arquivo JavaScript é um **módulo** com uma responsabilidade só. Todos t�
 - `localStorage` com JSON
 - `async` / `await` e Promises nas animações
 
+## Segurança
+
+O site é estático (não tem servidor, banco de dados nem senha), mas o JavaScript trata como "não confiável" tudo que vem do usuário ou do `localStorage`:
+
+- **Proteção contra XSS (injeção de script):** textos digitados entram na página sempre com `textContent`, nunca com `innerHTML`. Um nome como `<img onerror=...>` aparece só como texto.
+- **Content-Security-Policy:** a página só executa scripts e carrega imagens e estilos dos próprios arquivos (`'self'`).
+- **Dados do `localStorage` validados:** `JSON.parse` dentro de `try/catch` (dados corrompidos não derrubam o site); sugestões e favoritos conferidos campo a campo; categoria e tema só aceitam valores conhecidos.
+- **Limites de tamanho** garantidos no JavaScript, não só no `maxlength` do HTML.
+- Links externos com `rel="noopener"` e política de `referrer`.
+- Nenhuma senha, chave de API ou dado pessoal no código.
+
+> Observação: a extensão *Live Server* injeta um script próprio para recarregar a página. A Content-Security-Policy bloqueia esse script, então aparece um aviso no console e a página não recarrega sozinha ao salvar (é só apertar F5). Com `python -m http.server` isso não acontece.
+
 ## Avaliação de acessibilidade
 
 | Ferramenta / técnica | Resultado |

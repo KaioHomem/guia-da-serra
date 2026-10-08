@@ -29,9 +29,11 @@ const aviso = document.getElementById('aviso');
 
 // ---------- Estado da aplicação ----------
 // "let" = variável que PODE mudar. É tudo que o site precisa lembrar.
-let favoritos = armazenamento.carregarFavoritos(); // ids favoritados (vem do localStorage)
-let sugestoes = armazenamento.carregarSugestoes(); // lugares que o usuário sugeriu
-let tema = armazenamento.carregarTema();           // 'claro' ou 'escuro'
+// SEGURANÇA: o que vem do localStorage passa pelas funções "limpar" antes de ser usado
+let favoritos = regras.limparFavoritos(armazenamento.carregarFavoritos()); // ids favoritados
+let sugestoes = regras.limparSugestoes(armazenamento.carregarSugestoes()); // lugares sugeridos
+// Tema só pode ser 'escuro' ou 'claro'; qualquer outro valor vira 'claro'
+let tema = armazenamento.carregarTema() === 'escuro' ? 'escuro' : 'claro';
 let categoriaAtual = 'todas';                      // filtro de categoria escolhido
 let soFavoritos = false;                           // botão "Só favoritos" ligado?
 let botaoQueAbriu = null;                          // botão que abriu a janela (para devolver o foco)
@@ -134,7 +136,8 @@ lista.addEventListener('click', async (evento) => {
 
     // Os cards foram redesenhados, então o foco do teclado se perdeu.
     // Aqui ele volta para o mesmo coração. "?." = só chama focus() se o botão existir.
-    lista.querySelector(`[data-id="${id}"] [data-acao="favoritar"]`)?.focus();
+    // CSS.escape protege o seletor caso o id tenha aspas ou símbolos (segurança)
+    lista.querySelector(`[data-id="${CSS.escape(id)}"] [data-acao="favoritar"]`)?.focus();
   }
 
   // --- Botão "Remover" (só nos lugares sugeridos) ---
@@ -173,12 +176,14 @@ janela.addEventListener('close', () => botaoQueAbriu?.focus());
 formSugestao.addEventListener('submit', (evento) => {
   evento.preventDefault(); // não deixa a página recarregar
 
-  // Junta o que foi digitado num objeto. form.elements.nome = campo com name="nome"
+  // Junta o que foi digitado num objeto. form.elements.nome = campo com name="nome".
+  // SEGURANÇA: .slice corta no tamanho máximo. O maxlength do HTML pode ser
+  // removido pelo F12, então o limite é garantido também aqui no JavaScript.
   const dados = {
-    nome: formSugestao.elements.nome.value,
-    cidade: formSugestao.elements.cidade.value,
+    nome: formSugestao.elements.nome.value.slice(0, 60),
+    cidade: formSugestao.elements.cidade.value.slice(0, 40),
     categoria: formSugestao.elements.categoria.value,
-    descricao: formSugestao.elements.descricao.value,
+    descricao: formSugestao.elements.descricao.value.slice(0, 200),
   };
 
   // Valida e mostra os erros na tela
@@ -210,7 +215,7 @@ formSugestao.addEventListener('submit', (evento) => {
   efeitos.mostrarToast('Lugar adicionado ao guia ✓');
 
   // Rola a página suavemente até o card novo
-  lista.querySelector(`[data-id="${novo.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  lista.querySelector(`[data-id="${CSS.escape(novo.id)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
 // ---------- Botão de tema claro/escuro ----------

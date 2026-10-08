@@ -8,6 +8,21 @@
 import { CATEGORIAS } from './dados.js';
 
 // -------------------------------------------------------------
+// SEGURANÇA: textoParaLeitor cria um <span class="sr-only"> com texto.
+// Usa textContent (texto puro) em vez de innerHTML (que interpreta HTML).
+// Por quê? O nome de um lugar sugerido vem do que o usuário digitou.
+// Se alguém digitar <img src=x onerror="..."> e isso entrar com innerHTML,
+// o navegador EXECUTA o código. Isso se chama XSS (injeção de script).
+// Com textContent, o mesmo texto aparece só como letras, sem executar nada.
+// -------------------------------------------------------------
+function textoParaLeitor(texto) {
+  const span = document.createElement('span');
+  span.className = 'sr-only'; // invisível na tela, mas o leitor de tela lê
+  span.textContent = texto;
+  return span;
+}
+
+// -------------------------------------------------------------
 // criarCard: monta o HTML de UM lugar.
 // Resultado: <li> <article> foto + textos + botões </article> </li>
 // "ehFavorito" é true ou false.
@@ -79,9 +94,10 @@ function criarCard(lugar, ehFavorito) {
   botaoDetalhes.type = 'button';
   botaoDetalhes.className = 'botao botao--primario';
   botaoDetalhes.dataset.acao = 'detalhes'; // data-acao="detalhes": o main.js usa isso para saber o que fazer
-  // O <span class="sr-only"> é invisível na tela, mas o leitor de tela lê:
-  // "Ver detalhes de Cascata do Avencal" (sem isso, todos os botões teriam o mesmo nome)
-  botaoDetalhes.innerHTML = `Ver detalhes <span class="sr-only">de ${lugar.nome}</span>`;
+  // O texto escondido faz o leitor de tela ler "Ver detalhes de Cascata do Avencal"
+  // (sem isso, todos os botões teriam o mesmo nome).
+  // append com texto e elemento: nada é interpretado como HTML (seguro contra XSS)
+  botaoDetalhes.append('Ver detalhes ', textoParaLeitor(`de ${lugar.nome}`));
 
   // Botão de favorito (coração)
   const botaoFavorito = document.createElement('button');
@@ -92,8 +108,12 @@ function criarCard(lugar, ehFavorito) {
   botaoFavorito.setAttribute('aria-pressed', String(ehFavorito));
   // aria-label: nome do botão para o leitor de tela (o coração sozinho não diz nada)
   botaoFavorito.setAttribute('aria-label', `Favoritar ${lugar.nome}`);
+  // O coração é só decoração: aria-hidden esconde do leitor de tela
+  const coracao = document.createElement('span');
+  coracao.setAttribute('aria-hidden', 'true');
   // Ternário: se é favorito mostra coração cheio ♥, se não, coração vazio ♡
-  botaoFavorito.innerHTML = `<span aria-hidden="true">${ehFavorito ? '♥' : '♡'}</span>`;
+  coracao.textContent = ehFavorito ? '♥' : '♡';
+  botaoFavorito.appendChild(coracao);
 
   // append = coloca os dois botões dentro da área de ações
   acoes.append(botaoDetalhes, botaoFavorito);
@@ -104,7 +124,7 @@ function criarCard(lugar, ehFavorito) {
     botaoRemover.type = 'button';
     botaoRemover.className = 'botao botao--perigo';
     botaoRemover.dataset.acao = 'remover';
-    botaoRemover.innerHTML = `Remover <span class="sr-only">${lugar.nome}</span>`;
+    botaoRemover.append('Remover ', textoParaLeitor(lugar.nome)); // seguro: texto puro
     acoes.appendChild(botaoRemover);
   }
 
@@ -121,7 +141,7 @@ function criarCard(lugar, ehFavorito) {
 // "= null" quer dizer: se ninguém mandar esse valor, ele vale null.
 // -------------------------------------------------------------
 export function renderizarCards(lista, vazio, lugares, favoritos, idNovo = null) {
-  lista.innerHTML = ''; // apaga os cards antigos
+  lista.replaceChildren(); // apaga os cards antigos (sem usar innerHTML)
 
   // forEach = "para cada lugar da lista, faça..."
   lugares.forEach((lugar) => {
@@ -178,9 +198,10 @@ export function abrirDetalhes(lugar) {
 
     // Crédito da foto (a licença Creative Commons exige mostrar o autor)
     const credito = document.getElementById('detalhes-credito');
-    credito.innerHTML = '';                    // limpa o crédito do lugar anterior
+    credito.replaceChildren();                 // limpa o crédito do lugar anterior
     const link = document.createElement('a');  // cria um link <a>
     link.href = lugar.credito.fonte;           // endereço da foto original
+    link.rel = 'noopener';                     // segurança: a página do link não controla esta
     link.textContent = `Foto: ${lugar.credito.autor} (${lugar.credito.licenca})`;
     credito.appendChild(link);
   } else {

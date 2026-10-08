@@ -10,6 +10,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- description: resumo que aparece no Google -->
   <meta name="description" content="Guia turístico acessível de Lages e da Serra Catarinense, feito com HTML, CSS e JavaScript.">
+  <!-- SEGURANÇA – Content-Security-Policy (CSP): lista do que a página pode carregar.
+       'self' = só arquivos do próprio site. Mesmo que alguém conseguisse injetar
+       um <script> na página, o navegador se recusa a executar.
+       default-src: regra geral        script-src: de onde vêm os scripts
+       style-src: de onde vêm os CSS   img-src: de onde vêm as imagens
+       object-src 'none': bloqueia plugins antigos (Flash etc.)
+       base-uri / form-action: impede trocar o endereço base e o destino dos formulários -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <!-- SEGURANÇA: ao clicar num link externo, só o domínio do site é enviado (não o endereço completo) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <!-- title: texto da aba do navegador; é a primeira coisa que o leitor de tela fala -->
   <title>Guia da Serra – Lages e Serra Catarinense</title>
   <!-- Liga o arquivo de estilos (aparência) -->

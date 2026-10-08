@@ -4,6 +4,9 @@
 // Nenhuma delas mexe na tela (isso é trabalho do interface.js).
 // =============================================================
 
+// Lista de categorias válidas, usada para conferir dados de fora
+import { CATEGORIAS } from './dados.js';
+
 // -------------------------------------------------------------
 // normalizar: deixa o texto "limpo" para comparar.
 // Exemplo: "  Urubicí " vira "urubici".
@@ -80,11 +83,55 @@ export function validarSugestao(dados) {
   if (dados.cidade.trim().length < 3) {
     erros.cidade = 'Digite a cidade (pelo menos 3 letras).';
   }
-  // A primeira opção do <select> ("Escolha…") tem valor vazio ''
-  if (dados.categoria === '') {
+  // A primeira opção do <select> ("Escolha…") tem valor vazio ''.
+  // SEGURANÇA: também recusa qualquer valor que não seja uma categoria real
+  // (alguém pode alterar o <select> pelo F12). "in" pergunta se a chave existe no objeto.
+  if (!(dados.categoria in CATEGORIAS)) {
     erros.categoria = 'Escolha uma categoria.';
   }
   return erros;
+}
+
+// -------------------------------------------------------------
+// SEGURANÇA: limparSugestoes confere as sugestões que vieram do localStorage.
+// Esses dados podem ter sido alterados à mão, então nada é aceito "no escuro":
+// só passam itens com o formato certo, e eles são reconstruídos do zero
+// (qualquer campo extra ou estranho é jogado fora).
+// -------------------------------------------------------------
+export function limparSugestoes(lista) {
+  // Se não for um array, ignora tudo
+  if (!Array.isArray(lista)) return [];
+
+  return lista
+    // 1. Fica só com itens válidos
+    .filter((item) =>
+      item !== null &&
+      typeof item === 'object' &&                 // typeof diz o tipo do valor
+      typeof item.id === 'string' && item.id.startsWith('sugestao-') &&
+      typeof item.nome === 'string' &&
+      typeof item.cidade === 'string' &&
+      typeof item.descricao === 'string' &&
+      item.categoria in CATEGORIAS
+    )
+    // 2. Remonta cada item só com os campos que o site usa (slice corta textos gigantes)
+    .map((item) => ({
+      id: item.id,
+      nome: item.nome.slice(0, 60),
+      cidade: item.cidade.slice(0, 40),
+      categoria: item.categoria,
+      resumo: item.descricao.slice(0, 200),
+      descricao: item.descricao.slice(0, 200),
+      imagem: null,
+      sugerido: true,
+    }));
+}
+
+// -------------------------------------------------------------
+// SEGURANÇA: limparFavoritos garante que os favoritos são uma lista de textos
+// -------------------------------------------------------------
+export function limparFavoritos(lista) {
+  if (!Array.isArray(lista)) return [];
+  return lista.filter((id) => typeof id === 'string');
 }
 
 // -------------------------------------------------------------
