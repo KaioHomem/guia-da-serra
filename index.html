@@ -1,134 +1,84 @@
-<!-- DOCTYPE: avisa o navegador que é uma página HTML5 -->
 <!DOCTYPE html>
-<!-- lang="pt-BR": o leitor de tela pronuncia em português; o tradutor do navegador sabe o idioma -->
 <html lang="pt-BR">
-<!-- <head>: informações SOBRE a página (não aparecem no conteúdo) -->
 <head>
-  <!-- UTF-8: permite acentos e emojis -->
   <meta charset="UTF-8">
-  <!-- viewport: sem isso o celular mostra o site minúsculo. É a base do design responsivo -->
+  <!-- viewport: base do design responsivo no celular -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- description: resumo que aparece no Google -->
   <meta name="description" content="Guia turístico acessível de Lages e da Serra Catarinense, feito com HTML, CSS e JavaScript.">
-  <!-- SEGURANÇA – Content-Security-Policy (CSP): lista do que a página pode carregar.
-       'self' = só arquivos do próprio site. Mesmo que alguém conseguisse injetar
-       um <script> na página, o navegador se recusa a executar.
-       default-src: regra geral        script-src: de onde vêm os scripts
-       style-src: de onde vêm os CSS   img-src: de onde vêm as imagens
-       object-src 'none': bloqueia plugins antigos (Flash etc.)
-       base-uri / form-action: impede trocar o endereço base e o destino dos formulários -->
+
+  <!-- Segurança: a página só carrega scripts, estilos e imagens do próprio site (CSP) -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <!-- SEGURANÇA: ao clicar num link externo, só o domínio do site é enviado (não o endereço completo) -->
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <!-- title: texto da aba do navegador; é a primeira coisa que o leitor de tela fala -->
+
   <title>Guia da Serra – Lages e Serra Catarinense</title>
-  <!-- Liga o arquivo de estilos (aparência) -->
   <link rel="stylesheet" href="css/style.css">
-  <!-- Liga o JavaScript. type="module" permite usar import/export entre os arquivos JS
-       e faz o script rodar só depois que o HTML terminou de carregar -->
+  <!-- type="module": permite import/export entre os arquivos JS -->
   <script type="module" src="js/main.js"></script>
 </head>
-<!-- <body>: tudo que aparece na tela -->
 <body>
-  <!-- Link "pular para o conteúdo": fica escondido e aparece no primeiro Tab.
-       Quem usa teclado vai direto ao conteúdo, sem passar pelo topo (WCAG 2.4.1).
-       href="#conteudo" leva até o elemento com id="conteudo" (o <main>) -->
+  <!-- Acessibilidade: link escondido que aparece no primeiro Tab e pula direto pro conteúdo -->
   <a class="pular-link" href="#conteudo">Pular para o conteúdo principal</a>
 
-  <!-- <header>: topo da página (semântico: o leitor de tela sabe que é o cabeçalho) -->
+  <!-- ========== CABEÇALHO ========== -->
   <header class="topo">
-    <!-- Barra de cima: nome do site e botão de tema -->
     <div class="container topo__barra">
-      <!-- aria-hidden="true": o leitor de tela ignora o emoji (é só decoração) -->
       <p class="topo__marca"><span aria-hidden="true">🌲</span> Guia da Serra</p>
-      <!-- type="button": botão comum (não envia formulário).
-           aria-pressed: informa ao leitor de tela se o tema escuro está ligado (true) ou não (false).
-           O JavaScript troca esse valor ao clicar -->
+      <!-- aria-pressed: diz ao leitor de tela se o tema escuro está ligado -->
       <button type="button" id="botao-tema" class="botao botao--contorno" aria-pressed="false">
         Tema escuro
       </button>
     </div>
-    <!-- Chamada principal sobre a foto do topo -->
     <div class="container topo__chamada">
-      <!-- <h1>: título principal. Só existe UM h1 por página -->
       <h1>Descubra Lages e a Serra Catarinense</h1>
       <p>Campos de araucária, cachoeiras, história e a comida típica do planalto. Escolha seus favoritos e monte seu roteiro.</p>
     </div>
   </header>
 
-  <!-- <main>: conteúdo principal (só um por página).
-       id="conteudo": destino do link "pular".
-       tabindex="-1": deixa o <main> receber o foco quando o link "pular" é usado -->
   <main id="conteudo" tabindex="-1">
 
-    <!-- ===================== BUSCA E FILTROS ===================== -->
-    <!-- <section>: uma seção com assunto próprio.
-         aria-labelledby: o nome da seção é o texto do título com id="titulo-busca" -->
+    <!-- ========== BUSCA E FILTROS ========== -->
     <section class="container busca" aria-labelledby="titulo-busca">
-      <!-- <h2>: subtítulo (vem depois do h1, mantendo a ordem dos títulos) -->
       <h2 id="titulo-busca">Encontre um lugar</h2>
 
-      <!-- role="search": marca esta área como região de busca (o leitor de tela pode pular direto pra cá) -->
       <form id="form-busca" role="search" class="busca__form">
-        <!-- <label for="campo-busca">: liga o texto ao campo de id="campo-busca".
-             O leitor de tela lê o rótulo, e clicar no texto coloca o cursor no campo -->
         <label for="campo-busca">Buscar por nome ou cidade</label>
-        <!-- type="search": campo de busca (no celular, o teclado mostra o botão "buscar").
-             placeholder: exemplo cinza dentro do campo.
-             autocomplete="off": o navegador não fica sugerindo buscas antigas -->
         <input type="search" id="campo-busca" placeholder="Ex.: Urubici, cascata, catedral" autocomplete="off">
       </form>
 
-      <!-- role="group" + aria-label: agrupa os botões e dá um nome ao grupo para o leitor de tela -->
+      <!-- data-categoria: o JavaScript lê esse valor para saber qual categoria filtrar -->
       <div class="filtros" role="group" aria-label="Filtrar por categoria">
-        <!-- data-categoria: atributo inventado (data-*) que o JavaScript lê para saber qual categoria filtrar.
-             aria-pressed="true": este botão começa ligado -->
         <button type="button" class="filtro" data-categoria="todas" aria-pressed="true">Todos</button>
         <button type="button" class="filtro" data-categoria="natureza" aria-pressed="false"><span aria-hidden="true">🌲</span> Natureza</button>
         <button type="button" class="filtro" data-categoria="historia" aria-pressed="false"><span aria-hidden="true">🏛️</span> História</button>
         <button type="button" class="filtro" data-categoria="gastronomia" aria-pressed="false"><span aria-hidden="true">🍷</span> Gastronomia</button>
         <button type="button" class="filtro" data-categoria="cultura" aria-pressed="false"><span aria-hidden="true">🎉</span> Cultura e lazer</button>
-        <!-- Botão que mostra só os favoritos (liga e desliga) -->
         <button type="button" id="botao-favoritos" class="filtro filtro--favorito" aria-pressed="false"><span aria-hidden="true">♥</span> Só favoritos</button>
       </div>
 
-      <!-- Texto "9 lugares encontrados", escrito pelo JavaScript.
-           aria-live="polite": quando o texto muda, o leitor de tela fala (sem interromper o usuário) -->
+      <!-- aria-live: o leitor de tela fala o resultado quando ele muda -->
       <p id="resultado" class="resultado" aria-live="polite"></p>
     </section>
 
-    <!-- ===================== LISTA DE LUGARES ===================== -->
+    <!-- ========== LISTA DE LUGARES (cards criados pelo JavaScript) ========== -->
     <section class="container" aria-labelledby="titulo-lugares">
-      <!-- class="sr-only": título invisível na tela, mas o leitor de tela lê.
-           Mantém a estrutura de títulos certinha sem aparecer -->
       <h2 id="titulo-lugares" class="sr-only">Lugares</h2>
-      <!-- <ul>: lista. Começa vazia; o JavaScript cria um <li> (card) para cada lugar.
-           Com lista, o leitor de tela avisa "lista com 9 itens" -->
       <ul id="lista-lugares" class="cards"></ul>
-      <!-- hidden: escondido. O JavaScript mostra quando a busca não encontra nada -->
       <p id="vazio" class="vazio" hidden>Nenhum lugar encontrado. Tente outra busca ou outra categoria.</p>
     </section>
 
-    <!-- ===================== FORMULÁRIO DE SUGESTÃO ===================== -->
+    <!-- ========== FORMULÁRIO DE SUGESTÃO ========== -->
     <section class="container" aria-labelledby="titulo-sugestao">
       <div class="cartao sugestao">
         <h2 id="titulo-sugestao">Sugira um lugar</h2>
-        <!-- O asterisco é escondido do leitor de tela, que lê a palavra "asterisco" no lugar -->
         <p>Conhece um lugar que não está no guia? Adicione aqui. Campos com <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> são obrigatórios.</p>
 
-        <!-- novalidate: desliga os balões de erro padrão do navegador.
-             Os erros são mostrados pelo JavaScript, com mensagens próprias e acessíveis -->
+        <!-- novalidate: os erros são mostrados pelo JavaScript, com mensagens acessíveis -->
         <form id="form-sugestao" class="form" novalidate>
-          <!-- Cada campo fica num bloco: rótulo + campo + mensagem de erro -->
+          <!-- aria-describedby liga a mensagem de erro ao campo -->
           <div class="form__campo">
             <label for="sug-nome">Nome do lugar <span aria-hidden="true">*</span></label>
-            <!-- name="nome": o JavaScript pega o valor por form.elements.nome.
-                 maxlength: limite de letras.
-                 required + aria-required: campo obrigatório (avisa o leitor de tela).
-                 aria-describedby="erro-nome": liga a mensagem de erro ao campo; o leitor lê o erro junto -->
             <input type="text" id="sug-nome" name="nome" maxlength="60" required aria-required="true" aria-describedby="erro-nome">
-            <!-- Mensagem de erro (vazia até o JavaScript escrever algo) -->
             <p id="erro-nome" class="form__erro"></p>
           </div>
 
@@ -140,7 +90,6 @@
 
           <div class="form__campo">
             <label for="sug-categoria">Categoria <span aria-hidden="true">*</span></label>
-            <!-- <select>: lista de opções. A primeira tem value="" (vazio) para obrigar a escolher uma -->
             <select id="sug-categoria" name="categoria" required aria-required="true" aria-describedby="erro-categoria">
               <option value="">Escolha…</option>
               <option value="natureza">Natureza</option>
@@ -151,48 +100,37 @@
             <p id="erro-categoria" class="form__erro"></p>
           </div>
 
-          <!-- form__campo--largo: no CSS, este campo ocupa a linha inteira -->
           <div class="form__campo form__campo--largo">
             <label for="sug-descricao">Por que vale a visita? (opcional)</label>
-            <!-- <textarea>: campo de texto com várias linhas. rows="3" = altura de 3 linhas -->
             <textarea id="sug-descricao" name="descricao" rows="3" maxlength="200"></textarea>
           </div>
 
-          <!-- type="submit": envia o formulário (o JavaScript intercepta e valida antes) -->
           <button type="submit" class="botao botao--primario">Adicionar ao guia</button>
         </form>
       </div>
     </section>
   </main>
 
-  <!-- <footer>: rodapé da página (semântico) -->
+  <!-- ========== RODAPÉ ========== -->
   <footer class="rodape">
     <div class="container">
-      <!-- Crédito geral das fotos (a licença Creative Commons exige) -->
       <p>Fotos: <a href="https://commons.wikimedia.org">Wikimedia Commons</a>, sob licenças Creative Commons. O autor de cada foto aparece em "Ver detalhes".</p>
       <p>Avaliação 02 – Desenvolvimento Web – IFSC Câmpus Lages – 2026</p>
     </div>
   </footer>
 
-  <!-- ===================== JANELA DE DETALHES ===================== -->
-  <!-- <dialog>: janela que abre por cima da página (modal).
-       Já vem acessível: prende o foco dentro dela e fecha com a tecla Esc.
-       aria-labelledby: o nome da janela é o título com id="detalhes-titulo".
-       O JavaScript preenche os textos e abre com showModal() -->
+  <!-- ========== JANELA DE DETALHES ==========
+       <dialog> já prende o foco e fecha com Esc. O JavaScript preenche e abre. -->
   <dialog id="detalhes" class="detalhes" aria-labelledby="detalhes-titulo">
     <div class="detalhes__conteudo">
-      <!-- O ✕ não diz nada para o leitor de tela, então aria-label dá o nome "Fechar detalhes" -->
       <button type="button" id="fechar-detalhes" class="detalhes__fechar" aria-label="Fechar detalhes">
         <span aria-hidden="true">✕</span>
       </button>
-      <!-- <figure> + <figcaption>: imagem com legenda (aqui, o crédito da foto) -->
       <figure id="detalhes-figura" class="detalhes__figura">
-        <!-- src e alt vazios: o JavaScript coloca a foto e a descrição do lugar clicado -->
         <img id="detalhes-imagem" src="" alt="">
         <figcaption id="detalhes-credito"></figcaption>
       </figure>
       <h2 id="detalhes-titulo"></h2>
-      <!-- <dl>: lista de definições. <dt> = termo ("Cidade"), <dd> = valor ("Lages") -->
       <dl class="detalhes__info">
         <dt>Cidade</dt>
         <dd id="detalhes-cidade"></dd>
@@ -200,18 +138,13 @@
         <dd id="detalhes-categoria"></dd>
       </dl>
       <p id="detalhes-descricao"></p>
-      <!-- Link para o Google Maps (o JavaScript monta o endereço).
-           target="_blank": abre em nova aba. rel="noopener": segurança ao abrir nova aba.
-           O texto invisível avisa o leitor de tela que vai abrir outra aba -->
       <a id="detalhes-mapa" class="botao botao--primario" href="#" target="_blank" rel="noopener">
         Ver no mapa <span class="sr-only">(abre em nova aba)</span>
       </a>
     </div>
   </dialog>
 
-  <!-- Área invisível com aria-live: o JavaScript escreve aqui mensagens como
-       "Cascata do Avencal adicionado aos favoritos", e o leitor de tela fala em voz alta.
-       aria-atomic="true": lê a mensagem inteira, não só a parte que mudou -->
+  <!-- Área invisível: o leitor de tela anuncia as mensagens escritas aqui pelo JavaScript -->
   <div id="aviso" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
