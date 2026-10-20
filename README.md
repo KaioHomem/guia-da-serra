@@ -1,3 +1,5 @@
+<img src=".github/cover.png" width="100%" alt="Guia da Serra: guia turístico acessível de Lages e da Serra Catarinense, em HTML, CSS e JavaScript puro. Captura da página inicial.">
+
 # Guia da Serra – Lages e Serra Catarinense
 
 Guia turístico acessível e responsivo de **Lages e da Serra Catarinense**, feito somente com **HTML, CSS e JavaScript puro** (sem frameworks e sem bibliotecas).
